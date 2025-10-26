@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { useRouter, useParams } from "next/navigation"
+import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { PostForm } from "@/components/post-form"
-import { notFound } from "next/navigation"
 
 interface Category {
   id: number
@@ -32,7 +31,6 @@ interface Post {
 }
 
 export default function EditPostPage() {
-  const router = useRouter()
   const params = useParams()
   const id = params?.id as string
   const [post, setPost] = useState<Post | null>(null)
@@ -71,7 +69,7 @@ export default function EditPostPage() {
       }
     }
     fetchData()
-  }, [id, router])
+  }, [id])
 
   if (loading) {
     return (
@@ -82,7 +80,22 @@ export default function EditPostPage() {
   }
 
   if (error || !post) {
-    notFound()
+    return (
+      <main className="min-h-screen bg-background flex items-center justify-center">
+        <div className="max-w-md mx-auto px-4 py-16 text-center">
+          <h1 className="text-6xl font-bold mb-4">404</h1>
+          <h2 className="text-2xl font-semibold mb-6">Post Not Found</h2>
+          <p className="text-muted-foreground mb-8">
+            The post you are looking for doesn't exist or has been removed.
+          </p>
+          <Link href="/dashboard">
+            <Button size="lg">
+              Back to Dashboard
+            </Button>
+          </Link>
+        </div>
+      </main>
+    )
   }
 
   return (
