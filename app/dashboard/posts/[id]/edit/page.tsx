@@ -1,13 +1,35 @@
 "use client"
-import { use } from "react"
+
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter, useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { PostForm } from "@/components/post-form"
-import { Post, Category } from "../../../../types/post"
+import { notFound } from "next/navigation"
 
-// Types are defined locally in this file, no external import needed
+interface Category {
+  id: number
+  name: string
+  slug: string
+  description: string | null
+}
+
+interface Post {
+  id: number
+  title: string
+  slug: string
+  content: string
+  excerpt: string
+  categoryId: number | null
+  published: boolean
+  views: number
+  createdAt: string
+  updatedAt: string
+  category?: {
+    id: number
+    name: string
+  } | null
+}
 
 export default function EditPostPage() {
   const router = useRouter()
@@ -16,6 +38,7 @@ export default function EditPostPage() {
   const [post, setPost] = useState<Post | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     if (!id) return
@@ -29,7 +52,8 @@ export default function EditPostPage() {
         ])
 
         if (!postRes.ok) {
-          router.push("/not-found")
+          console.error(`_ Post fetch failed with status: ${postRes.status}`)
+          setError(true)
           return
         }
 
@@ -41,7 +65,7 @@ export default function EditPostPage() {
         console.log(`_ Loaded post: ${postData.title}`)
       } catch (error) {
         console.error("_ Error fetching post:", error)
-        router.push("/not-found")
+        setError(true)
       } finally {
         setLoading(false)
       }
@@ -57,12 +81,8 @@ export default function EditPostPage() {
     )
   }
 
-  if (!post) {
-    return (
-      <main className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Post not found</p>
-      </main>
-    )
+  if (error || !post) {
+    notFound()
   }
 
   return (
@@ -79,7 +99,7 @@ export default function EditPostPage() {
           <p className="text-muted-foreground">Update your article</p>
         </div>
 
-        <PostForm categories={categories as unknown as Category[]} initialPost={post} />
+        <PostForm categories={categories} initialPost={post} />
       </div>
     </main>
   )

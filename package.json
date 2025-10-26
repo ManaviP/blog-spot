@@ -8,6 +8,9 @@
     "lint": "eslint .",
     "start": "next start"
   },
+  "engines": {
+    "node": ">=18 <21"
+  },
   "dependencies": {
     "@aws-sdk/client-rds-data": "latest",
     "@cloudflare/workers-types": "latest",
@@ -16,6 +19,7 @@
     "@libsql/client": "latest",
     "@libsql/client-wasm": "latest",
     "@neondatabase/serverless": "latest",
+    "@netlify/plugin-nextjs": "^5.14.3",
     "@op-engineering/op-sqlite": "latest",
     "@opentelemetry/api": "latest",
     "@planetscale/database": "latest",

@@ -9,6 +9,12 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-}
+  // 👇 important for Netlify deployment
+  output: 'standalone',
+  // Optional but useful if you use environment variables
+  experimental: {
+    typedRoutes: true,
+  },
+};
 
-export default nextConfig
+export default nextConfig;
